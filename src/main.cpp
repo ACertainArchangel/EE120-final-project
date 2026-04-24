@@ -1,18 +1,37 @@
 #include <Arduino.h>
 
-// put function declarations here:
-int myFunction(int, int);
+#include "Internet.h"
+#include "SignalCoordinator.h"
+#include "Light.h"
+#include "Sensor.h"
+
+Internet internet;
+SignalCoordinator signalCoordinator;
+Light light;
+Sensor sensor;
+
+
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  internet.begin();
+  signalCoordinator.begin();
+  light.begin();
+  sensor.begin();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  internet.update();
+  signalCoordinator.update();
+  light.update();
+  sensor.update();
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+int main() {
+  init();
+  setup();
+  while (true) {
+    loop();
+  }
+  // Never happens
+  return 0;
 }
