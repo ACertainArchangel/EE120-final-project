@@ -6,4 +6,5 @@ class Sensor {
 
   void begin();
   void update();
+  bool isActive();
 };
