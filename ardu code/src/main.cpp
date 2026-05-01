@@ -7,15 +7,23 @@
 
 //NUM_LIGHTS is defined in SignalCoordinator.h and in Internet.h so if you change one change the other... #HACK
 
+#define LAMP_INDEX 0
+#define RED 255
+#define GREEN 255
+#define BLUE 255
+
+#define ARDU_TX_ADD_PIN 2
+#define ARDU_TX_REMOVE_PIN 5
+
 Internet internet;
 SignalCoordinator signalCoordinator;
 Light light;
 Sensor sensor;
 
-byte lamp_number = 0;
-byte color_r = 255;
-byte color_g = 255;
-byte color_b = 255;
+byte lamp_number = LAMP_INDEX;
+byte color_r = RED;
+byte color_g = GREEN;
+byte color_b = BLUE;
 
 void setup() {
 

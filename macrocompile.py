@@ -2,10 +2,34 @@
 DEFAULT_MACROS = {
     "NUM_LIGHTS": 4,
     "LED_PIN": 13,
-    "SENSOR_PIN": 2,
+    "SENSOR_PIN": "A0",
+    "LAMP_INDEX": 0,
+    "RED": 255,
+    "GREEN": 255,
+    "BLUE": 255,
+
+    "ESP_RX_ADD_PIN": 2,
+    "ARDU_TX_ADD_PIN": 3,
+
+    "ESP_RX_REMOVE_PIN": 4,
+    "ARDU_TX_REMOVE_PIN": 5,
+
+    "ESP_TX_PIN": 3,
+
+    "ARDU_RX_PIN1": 6,
+    "ARDU_RX_PIN2": 7,
+    "ARDU_RX_PIN3": 8,
+    "ARDU_RX_PIN4": 9,
+
+    "ESP_TX_PIN1": 5,
+    "ESP_TX_PIN2": 6,
+    "ESP_TX_PIN3": 7,
+    "ESP_TX_PIN4": 8,
+
+    "SENSOR_MODE": "DIGITAL",
+    "SENSOR_THRESHOLD": 512,
+
 }
-
-
 
 ## This is a slop script to patch our hacky cross platform macro system.
 

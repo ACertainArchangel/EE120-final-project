@@ -3,6 +3,9 @@
 
 #define NUM_LIGHTS 4 // HACK: This is defined in both Internet.h and SignalCoordinator.h so if you change one change the other.
 
+#define ARDU_TX_ADD_PIN 2
+#define ARDU_TX_REMOVE_PIN 5
+
 class Internet {
  public:
   Internet();
@@ -11,4 +14,8 @@ class Internet {
   void update();
   void txMessage(byte target_number);
   void rxMessage(byte array[], int* size);
+
+ private:
+  static unsigned long started_message_at;
+  static bool is_sending_message;
 };
