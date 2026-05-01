@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 DEFAULT_MACROS = {
+
+    "LAMP_INDEX": 0,
+    
+
     "NUM_LIGHTS": 4,
     "LED_PIN": 13,
     "SENSOR_PIN_ANALOG": "A0",
-    "SENSOR_PIN_DIGITAL": 12,
-    "LAMP_INDEX": 0,
+    "SENSOR_PIN_DIGITAL": 13,
     "RED": 255,
     "GREEN": 255,
     "BLUE": 255,
+
+    "RED_PIN": 10,
+    "GREEN_PIN": 11,
+    "BLUE_PIN": 12,
 
     "ESP_RX_ADD_PIN": 2,
     "ARDU_TX_ADD_PIN": 3,
@@ -29,7 +36,17 @@ DEFAULT_MACROS = {
 
     "SENSOR_MODE": "\"DIGITAL\"",
     "SENSOR_THRESHOLD": 512,
-    "SENSOR_ACTIVE_HIGH": 1
+    "SENSOR_ACTIVE_HIGH": 1,
+
+    "LIST_OUT_PIN_1": 5,
+    "LIST_OUT_PIN_2": 6,
+    "LIST_OUT_PIN_3": 7,
+    "LIST_OUT_PIN_4": 8,
+
+    "NET_SSID": "\"EE120_NET\"",
+    "NET_PASS": "\"ee120pass\"",
+    "NET_PORT": 4210,
+    "MAX_CLIENTS": 8
 
 }
 

@@ -12,7 +12,7 @@
 #define GREEN 255
 #define BLUE 255
 
-#define ARDU_TX_ADD_PIN 2
+#define ARDU_TX_ADD_PIN 3
 #define ARDU_TX_REMOVE_PIN 5
 
 Internet internet;

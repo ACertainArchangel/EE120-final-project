@@ -9,6 +9,9 @@ Internet::Internet() {}
 unsigned long Internet::started_message_at = millis();
 bool Internet::is_sending_message = true;
 
+unsigned long Internet::started_delete_message_at = millis();
+bool Internet::is_sending_delete_message = true;
+
 void Internet::begin() {
     pinMode(ARDU_TX_ADD_PIN, OUTPUT);
     pinMode(ARDU_TX_REMOVE_PIN, OUTPUT);
@@ -20,28 +23,35 @@ void Internet::update() {
   }
 }
 
-void Internet::txMessage(byte target_number) {
+void Internet::txMessage() {
     is_sending_message = true;
     digitalWrite(ARDU_TX_ADD_PIN, HIGH);
+    started_message_at = millis();
 }
 
 void Internet::rxMessage(byte array[], int* size) {
     int i=0;
-    if(digital_read(ARDU_RX_PIN1) == HIGH) {
+    if(digitalRead(ARDU_RX_PIN1) == HIGH) {
         array[i] = 1;
         i++;
     }
-    if (digital_read(ARDU_RX_PIN2) == HIGH) {
+    if (digitalRead(ARDU_RX_PIN2) == HIGH) {
         array[i] = 2;
         i++;
     }
-    if (digital_read(ARDU_RX_PIN3) == HIGH) {
+    if (digitalRead(ARDU_RX_PIN3) == HIGH) {
         array[i] = 3;
         i++;
     }
-    if (digital_read(ARDU_RX_PIN4) == HIGH) {
+    if (digitalRead(ARDU_RX_PIN4) == HIGH) {
         array[i] = 4;
         i++;
     }
     *size = i;
+}
+
+void Internet::rxDeleteMessage() {
+    digitalWrite(ARDU_TX_REMOVE_PIN, HIGH);
+    is_sending_delete_message = true;
+    started_delete_message_at = millis();
 }

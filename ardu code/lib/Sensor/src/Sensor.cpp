@@ -8,7 +8,7 @@
 #define SENSOR_MODE "DIGITAL"
 #define SENSOR_THRESHOLD 512
 #define SENSOR_PIN_ANALOG A0
-#define SENSOR_PIN_DIGITAL 12
+#define SENSOR_PIN_DIGITAL 13
 Sensor::Sensor() {}
 
 void Sensor::begin() {}

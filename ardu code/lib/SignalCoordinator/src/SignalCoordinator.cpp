@@ -20,9 +20,8 @@ namespace SignalCoordinator{
         return in_in(arr, len, lamp_number);
     }
 
-    void txActiveSignal(byte lamp_number) {
-        // internet.txMessage(lamp_number); for all the lamp numbers adjacent to our lamp number. 
-        // Should be a switch case or generated from some topology map. You'll figure it out :)
+    void txActiveSignal() {
+        internet.txMessage();
     }
 }
 
