@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#define NUM_LIGHTS 4
+
 // put function declarations here:
 int myFunction(int, int);
 
