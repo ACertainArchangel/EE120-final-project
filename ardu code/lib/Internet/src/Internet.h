@@ -6,6 +6,12 @@
 #define ARDU_TX_ADD_PIN 2
 #define ARDU_TX_REMOVE_PIN 5
 
+#define ARDU_RX_PIN1 3
+#define ARDU_RX_PIN2 3
+#define ARDU_RX_PIN3 3
+#define ARDU_RX_PIN4 3
+
+
 class Internet {
  public:
   Internet();

@@ -2,7 +2,8 @@
 DEFAULT_MACROS = {
     "NUM_LIGHTS": 4,
     "LED_PIN": 13,
-    "SENSOR_PIN": "A0",
+    "SENSOR_PIN_ANALOG": "A0",
+    "SENSOR_PIN_DIGITAL": 12,
     "LAMP_INDEX": 0,
     "RED": 255,
     "GREEN": 255,
@@ -26,8 +27,9 @@ DEFAULT_MACROS = {
     "ESP_TX_PIN3": 7,
     "ESP_TX_PIN4": 8,
 
-    "SENSOR_MODE": "DIGITAL",
+    "SENSOR_MODE": "\"DIGITAL\"",
     "SENSOR_THRESHOLD": 512,
+    "SENSOR_ACTIVE_HIGH": 1
 
 }
 

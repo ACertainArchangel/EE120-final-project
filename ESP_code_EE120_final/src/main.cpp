@@ -26,6 +26,11 @@
 
 #define ESP_TX_PIN 3
 
+#define LIST_OUT_PIN_1 5
+#define LIST_OUT_PIN_2 6
+#define LIST_OUT_PIN_3 7
+#define LIST_OUT_PIN_4 8
+
 #define NET_SSID "EE120_NET"
 #define NET_PASS "ee120pass"
 #define NET_PORT 4210
@@ -33,6 +38,20 @@
 
 static const byte adjacent[] = { ADJACENT };
 static const byte adjacent_count = sizeof(adjacent) / sizeof(adjacent[0]);
+
+static const byte list_out_pins[4] = {
+  LIST_OUT_PIN_1, LIST_OUT_PIN_2, LIST_OUT_PIN_3, LIST_OUT_PIN_4
+};
+
+static void updateListPins(const byte* list, byte count) {
+  bool present[4] = { false, false, false, false };
+  for (byte i = 0; i < count; i++) {
+    if (list[i] >= 1 && list[i] <= 4) present[list[i] - 1] = true;
+  }
+  for (byte i = 0; i < 4; i++) {
+    digitalWrite(list_out_pins[i], present[i] ? HIGH : LOW);
+  }
+}
 
 #if IS_ROUTER
 
@@ -62,6 +81,7 @@ static void removeNumber(byte n) {
 }
 
 static void broadcastList() {
+  updateListPins(numbers, numbers_count);
   String msg = "LIST";
   for (byte i = 0; i < numbers_count; i++) {
     msg += ' ';
@@ -146,6 +166,24 @@ static void ensureUplink() {
 
 static void networkUpdate() {
   ensureUplink();
+  while (uplink.connected() && uplink.available()) {
+    String line = uplink.readStringUntil('\n');
+    line.trim();
+    if (!line.startsWith("LIST")) continue;
+    byte parsed[NUM_LIGHTS];
+    byte count = 0;
+    String rest = line.substring(4);
+    rest.trim();
+    while (rest.length() > 0 && count < NUM_LIGHTS) {
+      int sp = rest.indexOf(' ');
+      String tok = (sp < 0) ? rest : rest.substring(0, sp);
+      parsed[count++] = (byte)tok.toInt();
+      if (sp < 0) break;
+      rest = rest.substring(sp + 1);
+      rest.trim();
+    }
+    updateListPins(parsed, count);
+  }
 }
 
 static void sendAdd(byte n) {
@@ -172,6 +210,10 @@ static bool prev_rx_remove = false;
 void setup() {
   pinMode(ESP_RX_ADD_PIN, INPUT);
   pinMode(ESP_RX_REMOVE_PIN, INPUT);
+  for (byte i = 0; i < 4; i++) {
+    pinMode(list_out_pins[i], OUTPUT);
+    digitalWrite(list_out_pins[i], LOW);
+  }
   networkBegin();
 }
 

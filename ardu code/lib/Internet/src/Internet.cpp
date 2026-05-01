@@ -26,12 +26,22 @@ void Internet::txMessage(byte target_number) {
 }
 
 void Internet::rxMessage(byte array[], int* size) {
-    if (digitalRead(ARDU_RX_PIN) == HIGH){
-        *size = 1;
-        array[0] = 0; // HACK: This is a placeholder for the actual message queue which is not implemented.
+    int i=0;
+    if(digital_read(ARDU_RX_PIN1) == HIGH) {
+        array[i] = 1;
+        i++;
     }
-    else{
-        *size = 0;
+    if (digital_read(ARDU_RX_PIN2) == HIGH) {
+        array[i] = 2;
+        i++;
     }
+    if (digital_read(ARDU_RX_PIN3) == HIGH) {
+        array[i] = 3;
+        i++;
+    }
+    if (digital_read(ARDU_RX_PIN4) == HIGH) {
+        array[i] = 4;
+        i++;
+    }
+    *size = i;
 }
-
