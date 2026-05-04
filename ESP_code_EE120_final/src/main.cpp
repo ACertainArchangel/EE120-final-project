@@ -3,54 +3,37 @@
 
 #define NUM_LIGHTS 4
 
-#define IS_ROUTER 1
+#define IS_ROUTER 0
 
-#define LIGHT_INDEX 0
+#define LIGHT_INDEX 2
 
 // Adjacent light indices, comma-separated. Must contain at least one entry.
-#define ADJACENT 1
+#define ADJACENT {1, 3}
 
-#define LIGHT_PIN 13
+#define ARDU_TX_ADD_PIN 12
 
-#define SENSOR_PIN A0
+#define ARDU_TX_REMOVE_PIN 5
 
-#define ADRU_RX_PIN 0
+#define ESP_RX_ADD_PIN 4
 
-#define ADRU_TX_ADD_PIN 1
+#define ESP_RX_REMOVE_PIN 16
 
-#define ADRU_TX_REMOVE_PIN 5
-
-#define ESP_RX_ADD_PIN 2
-
-#define ESP_RX_REMOVE_PIN 4
-
-#define ESP_TX_PIN 3
-
-#define LIST_OUT_PIN_1 5
-#define LIST_OUT_PIN_2 6
-#define LIST_OUT_PIN_3 7
-#define LIST_OUT_PIN_4 8
+#define ESP_TX_PIN 14
 
 #define NET_SSID "EE120_NET"
 #define NET_PASS "ee120pass"
 #define NET_PORT 4210
 #define MAX_CLIENTS 8
 
-static const byte adjacent[] = { ADJACENT };
+static const byte adjacent[] = ADJACENT;
 static const byte adjacent_count = sizeof(adjacent) / sizeof(adjacent[0]);
 
-static const byte list_out_pins[4] = {
-  LIST_OUT_PIN_1, LIST_OUT_PIN_2, LIST_OUT_PIN_3, LIST_OUT_PIN_4
-};
-
-static void updateListPins(const byte* list, byte count) {
-  bool present[4] = { false, false, false, false };
+static void updateSelfPin(const byte* list, byte count) {
+  bool present = false;
   for (byte i = 0; i < count; i++) {
-    if (list[i] >= 1 && list[i] <= 4) present[list[i] - 1] = true;
+    if (list[i] == LIGHT_INDEX) { present = true; break; }
   }
-  for (byte i = 0; i < 4; i++) {
-    digitalWrite(list_out_pins[i], present[i] ? HIGH : LOW);
-  }
+  digitalWrite(ESP_TX_PIN, present ? HIGH : LOW);
 }
 
 #if IS_ROUTER
@@ -81,7 +64,7 @@ static void removeNumber(byte n) {
 }
 
 static void broadcastList() {
-  updateListPins(numbers, numbers_count);
+  updateSelfPin(numbers, numbers_count);
   String msg = "LIST";
   for (byte i = 0; i < numbers_count; i++) {
     msg += ' ';
@@ -152,6 +135,8 @@ static void sendRemove(byte n) {
 #else  // !IS_ROUTER
 
 static WiFiClient uplink;
+static byte last_list[NUM_LIGHTS];
+static byte last_list_count = 0;
 
 static void networkBegin() {
   WiFi.mode(WIFI_STA);
@@ -182,7 +167,9 @@ static void networkUpdate() {
       rest = rest.substring(sp + 1);
       rest.trim();
     }
-    updateListPins(parsed, count);
+    last_list_count = count;
+    for (byte i = 0; i < count; i++) last_list[i] = parsed[i];
+    updateSelfPin(parsed, count);
   }
 }
 
@@ -205,34 +192,55 @@ static void sendRemove(byte n) {
 #endif
 
 static bool prev_rx_add = false;
-static bool prev_rx_remove = false;
+static unsigned long last_debug_ms = 0;
+
+static void debugPrint() {
+  unsigned long now = millis();
+  if (now - last_debug_ms < 500) return;
+  last_debug_ms = now;
+  Serial.print("RX_ADD=");
+  Serial.print(digitalRead(ESP_RX_ADD_PIN));
+  Serial.print(" RX_REMOVE=");
+  Serial.print(digitalRead(ESP_RX_REMOVE_PIN));
+  Serial.print(" LIST=[");
+#if IS_ROUTER
+  for (byte i = 0; i < numbers_count; i++) {
+    if (i) Serial.print(',');
+    Serial.print(numbers[i]);
+  }
+#else
+  for (byte i = 0; i < last_list_count; i++) {
+    if (i) Serial.print(',');
+    Serial.print(last_list[i]);
+  }
+#endif
+  Serial.println("]");
+}
 
 void setup() {
+  Serial.begin(115200);
   pinMode(ESP_RX_ADD_PIN, INPUT);
   pinMode(ESP_RX_REMOVE_PIN, INPUT);
-  for (byte i = 0; i < 4; i++) {
-    pinMode(list_out_pins[i], OUTPUT);
-    digitalWrite(list_out_pins[i], LOW);
-  }
+  pinMode(ESP_TX_PIN, OUTPUT);
+  digitalWrite(ESP_TX_PIN, LOW);
   networkBegin();
 }
 
 void loop() {
   networkUpdate();
+  debugPrint();
 
   bool rx_add = digitalRead(ESP_RX_ADD_PIN) == HIGH;
-  bool rx_remove = digitalRead(ESP_RX_REMOVE_PIN) == HIGH;
 
   if (rx_add && !prev_rx_add) {
     for (byte i = 0; i < adjacent_count; i++) {
       sendAdd(adjacent[i]);
     }
   }
-  if (rx_remove && !prev_rx_remove) {
+  if (digitalRead(ESP_RX_REMOVE_PIN) == HIGH) {
     sendRemove(LIGHT_INDEX);
   }
 
   prev_rx_add = rx_add;
-  prev_rx_remove = rx_remove;
 }
 

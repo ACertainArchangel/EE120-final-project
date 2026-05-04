@@ -4,19 +4,25 @@
 #include "Sensor.h"
 #include <Arduino.h>
 
-#define SENSOR_ACTIVE_HIGH 1 
-#define SENSOR_MODE "DIGITAL"
+#define SENSOR_ACTIVE_HIGH 0
+#define SENSOR_MODE "ANALOG"
 #define SENSOR_THRESHOLD 512
 #define SENSOR_PIN_ANALOG A0
 #define SENSOR_PIN_DIGITAL 13
 Sensor::Sensor() {}
 
-void Sensor::begin() {}
+void Sensor::begin() {
+  if (strcmp(SENSOR_MODE, "DIGITAL") == 0) {
+    pinMode(SENSOR_PIN_DIGITAL, INPUT_PULLUP);
+  } else {
+    pinMode(SENSOR_PIN_ANALOG, INPUT_PULLUP);
+  }
+}
 
 void Sensor::update() {}
 
 bool Sensor::isActive() {
-  if (SENSOR_MODE == "DIGITAL") {
+  if (strcmp(SENSOR_MODE, "DIGITAL") == 0) {
   int value = digitalRead(SENSOR_PIN_DIGITAL);
 
     if (SENSOR_ACTIVE_HIGH) {
@@ -25,8 +31,11 @@ bool Sensor::isActive() {
       return value == LOW;
     }
   }
-  if (SENSOR_MODE == "ANALOG"){
+  if (strcmp(SENSOR_MODE, "ANALOG") == 0){
     int value = analogRead(SENSOR_PIN_ANALOG);
+
+    Serial.print("Analog value: ");
+    Serial.println(value);
 
     if (SENSOR_ACTIVE_HIGH) {
       return value >= SENSOR_THRESHOLD;
