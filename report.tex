@@ -1,0 +1,251 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{tabularx}
+\usepackage{caption}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+}
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{codecomment}{rgb}{0.25,0.5,0.25}
+\definecolor{codekeyword}{rgb}{0.0,0.0,0.7}
+\definecolor{codestring}{rgb}{0.6,0.1,0.1}
+
+\lstdefinestyle{cppstyle}{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{codecomment}\itshape,
+    keywordstyle=\color{codekeyword}\bfseries,
+    stringstyle=\color{codestring},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    language=C++,
+}
+
+\lstdefinestyle{pystyle}{
+    backgroundcolor=\color{codegray},
+    commentstyle=\color{codecomment}\itshape,
+    keywordstyle=\color{codekeyword}\bfseries,
+    stringstyle=\color{codestring},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    language=Python,
+}
+
+\lstdefinestyle{inistyle}{
+    backgroundcolor=\color{codegray},
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    frame=single,
+}
+
+\title{EE120 Final Project Report \\
+       \large Networked RGB Lamp System (Arduino + ESP8266)}
+\author{Gabriel Jordaan, Sam Schultz, Nick Sankovich}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Project Overview}
+
+This project implements a network of four RGB lamps that communicate via a
+mesh of ESP8266 Wi-Fi nodes paired with Arduino Uno boards. Each lamp has a
+sensor that, when activated, signals its adjacent lamps over the network to
+turn on for a fixed duration. Each lamp consists of two microcontrollers:
+an Arduino Uno (sensor / RGB driver / coordinator) and an ESP8266 (Wi-Fi
+transport, with one node configured as a router/access-point and the rest as
+clients).
+
+\section{Source Code}
+
+\subsection{Arduino: \texttt{ardu code/src/main.cpp}}
+\lstinputlisting[style=cppstyle]{ardu code/src/main.cpp}
+
+\subsection{Arduino: \texttt{lib/Internet/src/Internet.h}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Internet/src/Internet.h}
+
+\subsection{Arduino: \texttt{lib/Internet/src/Internet.cpp}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Internet/src/Internet.cpp}
+
+\subsection{Arduino: \texttt{lib/SignalCoordinator/src/SignalCoordinator.h}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/SignalCoordinator/src/SignalCoordinator.h}
+
+\subsection{Arduino: \texttt{lib/SignalCoordinator/src/SignalCoordinator.cpp}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/SignalCoordinator/src/SignalCoordinator.cpp}
+
+\subsection{Arduino: \texttt{lib/Light/src/Light.h}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Light/src/Light.h}
+
+\subsection{Arduino: \texttt{lib/Light/src/Light.cpp}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Light/src/Light.cpp}
+
+\subsection{Arduino: \texttt{lib/Sensor/src/Sensor.h}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Sensor/src/Sensor.h}
+
+\subsection{Arduino: \texttt{lib/Sensor/src/Sensor.cpp}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Sensor/src/Sensor.cpp}
+
+\subsection{Arduino: \texttt{lib/Utils/src/Utils.h}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Utils/src/Utils.h}
+
+\subsection{Arduino: \texttt{lib/Utils/src/Utils.cpp}}
+\lstinputlisting[style=cppstyle]{ardu code/lib/Utils/src/Utils.cpp}
+
+\subsection{Arduino: \texttt{platformio.ini}}
+\lstinputlisting[style=inistyle]{ardu code/platformio.ini}
+
+\subsection{ESP8266: \texttt{ESP\_code\_EE120\_final/src/main.cpp}}
+\lstinputlisting[style=cppstyle]{ESP_code_EE120_final/src/main.cpp}
+
+\subsection{ESP8266: \texttt{platformio.ini}}
+\lstinputlisting[style=inistyle]{ESP_code_EE120_final/platformio.ini}
+
+\subsection{Build / Macro Patcher: \texttt{macrocompile.py}}
+\lstinputlisting[style=pystyle]{macrocompile.py}
+
+\section{Pin Input / Output Table}
+
+The table below lists every pin used across the Arduino Uno and the
+ESP8266 NodeMCU, the component (software module) that owns the pin, and
+the role that pin plays in the system.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.06\textwidth}
+                  >{\raggedright\arraybackslash}p{0.10\textwidth}
+                  >{\raggedright\arraybackslash}p{0.07\textwidth}
+                  >{\raggedright\arraybackslash}p{0.18\textwidth}
+                  >{\raggedright\arraybackslash}p{0.45\textwidth}}
+\toprule
+\textbf{Board} & \textbf{Direction} & \textbf{Pin} & \textbf{Component} & \textbf{Function} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Board} & \textbf{Direction} & \textbf{Pin} & \textbf{Component} & \textbf{Function} \\
+\midrule
+\endhead
+
+Arduino & OUTPUT & D10 & Light (Red LED) & PWM drive for the red channel of the RGB lamp (\texttt{analogWrite}). \\
+Arduino & OUTPUT & D11 & Light (Green LED) & PWM drive for the green channel of the RGB lamp. \\
+Arduino & OUTPUT & D3  & Light (Blue LED) & PWM drive for the blue channel of the RGB lamp. \\
+Arduino & INPUT  & A0  & Sensor (Analog) & Reads the analog motion / proximity sensor; lamp is considered active when the value crosses \texttt{SENSOR\_THRESHOLD} (512). \\
+Arduino & INPUT  & D13 & Sensor (Digital) & Alternative digital sensor input (used when \texttt{SENSOR\_MODE = "DIGITAL"}). \\
+Arduino & OUTPUT & D12 & Internet (TX-ADD) & Pulses HIGH for $\sim$1\,s to tell the local ESP8266 to broadcast an ``ADD'' request, marking adjacent lamps as active on the shared network list. \\
+Arduino & OUTPUT & D5  & Internet (TX-REMOVE) & Pulses HIGH for $\sim$1\,s to tell the local ESP8266 to send a ``REMOVE'' acknowledgement, removing this lamp from the network active list. \\
+Arduino & INPUT  & D6  & Internet (RX) & Reads the activation line from the local ESP8266; HIGH means this lamp's index appears in the network active list and the lamp should turn on. \\
+\midrule
+ESP8266 & INPUT  & GPIO4 (D2)  & Internet (RX-ADD) & Receives the Arduino's ``add adjacent lamps'' pulse; on a rising edge the ESP sends \texttt{ADD <n>} for each adjacent index over Wi-Fi. \\
+ESP8266 & INPUT  & GPIO16 (D0) & Internet (RX-REMOVE) & Receives the Arduino's ``remove me'' pulse; the ESP sends \texttt{REMOVE <LIGHT\_INDEX>} over Wi-Fi to clear itself from the active list. \\
+ESP8266 & OUTPUT & GPIO14 (D5) & Internet (TX) & Drives the Arduino's RX line HIGH whenever this lamp's \texttt{LIGHT\_INDEX} is present in the broadcast active list (i.e.\ this lamp should turn on). \\
+\bottomrule
+\caption{Pin assignments across the Arduino Uno and ESP8266 NodeMCU for one lamp node.}
+\label{tab:pinout}
+\end{longtable}
+
+\section{Git Commits Tied to Each Feature}
+
+The table below maps each major feature of the project to the git commits
+that introduced or finalized it. Commit hashes are short SHAs from the
+project repository.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.28\textwidth}
+                  >{\raggedright\arraybackslash}p{0.20\textwidth}
+                  >{\raggedright\arraybackslash}p{0.45\textwidth}}
+\toprule
+\textbf{Feature} & \textbf{Commit(s)} & \textbf{Description} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Feature} & \textbf{Commit(s)} & \textbf{Description} \\
+\midrule
+\endhead
+
+Project skeleton / PlatformIO scaffold &
+\texttt{8fd7f04} \newline (Initial commit) &
+Created the PlatformIO project layout, \texttt{.gitignore}, and stub \texttt{src/main.cpp}. \\
+
+Module skeletons (Internet, Light, Sensor, SignalCoordinator) &
+\texttt{c5e277e} \newline (skeleton) &
+Stubbed out the \texttt{Internet}, \texttt{Light}, \texttt{Sensor} and \texttt{SignalCoordinator} libraries with empty class methods. \\
+
+Skeleton wiring \& \texttt{Utils} helper &
+\texttt{92fed2d} \newline (Skeleton done) &
+Connected the modules into \texttt{main.cpp} via \texttt{begin()}/\texttt{update()}, added the \texttt{Utils} library, and fleshed out an early \texttt{SignalCoordinator}. \\
+
+RGB pin macros &
+\texttt{8542f63} \newline (Put RGB macros in Light.h) &
+Centralized the \texttt{RED\_PIN}, \texttt{GREEN\_PIN}, \texttt{BLUE\_PIN} pin numbers in \texttt{Light.h}. \\
+
+RGB lamp output (Light module) &
+\texttt{144188f} \newline (Completed Light.cpp) &
+Implemented \texttt{Light::begin} (\texttt{pinMode} OUTPUT) and \texttt{Light::setColor} using \texttt{analogWrite} on the three PWM pins. \\
+
+Repository restructure into Arduino + ESP subprojects &
+\texttt{2c1c8f3} \newline (Added ESP subrepo) &
+Split the codebase into \texttt{ardu code/} and \texttt{ESP\_code\_EE120\_final/} so the Uno and ESP8266 firmware can be built as separate PlatformIO projects. \\
+
+Cross-platform macro patching tool &
+\texttt{109c159} \newline (Added gabage slop macro patching) &
+Added \texttt{macrocompile.py}, which rewrites \texttt{\#define} values across both subprojects from a single source of truth so pin numbers stay in sync between the Arduino and ESP code. \\
+
+ESP8266 Wi-Fi networking (router/client, ADD/REMOVE/LIST protocol) &
+\texttt{38517a6} \newline (ESP CODE) &
+Implemented the ESP firmware: SoftAP router mode with \texttt{WiFiServer}/client list, station-mode clients, and the \texttt{ADD <n>} / \texttt{REMOVE <n>} / \texttt{LIST ...} text protocol. Also added the matching Arduino-side \texttt{txMessage} / \texttt{rxMessage} / \texttt{txDeleteMessage} signal lines. \\
+
+Analog sensor mode &
+\texttt{eb52ebb}, \texttt{2b9086c} \newline (Update Sensor.cpp) &
+Added analog sensor support with a configurable threshold and active-high / active-low logic; later tweaked the comparison direction. \\
+
+Per-lamp adjacency macros &
+\texttt{24aa73e} \newline (Pity macros for Nick S.) &
+Added the \texttt{LAMP\_INDEX}-driven adjacency / router selection to \texttt{macrocompile.py} (each lamp's neighbours are auto-set), and matching ESP-side \texttt{ADJACENT}/\texttt{LIGHT\_INDEX} macros. \\
+
+End-to-end integration polish &
+\texttt{dd32614} \newline (Finishing touches) &
+Final wiring of the Arduino main loop: TX-add / TX-remove pulse timing, the 10-second active timer, and the ack-back ``remove me'' message after receiving an active signal. \\
+
+Final flashed configuration &
+\texttt{6446a32} \newline (Flashed final 3) &
+Last on-device tuning pass before demo --- pin number cleanup, sensor calibration, and merged \texttt{Internet} / \texttt{SignalCoordinator} edits used in the final flashed image. \\
+
+\bottomrule
+\caption{Mapping of features to the commits that introduced or finalized them.}
+\label{tab:commits}
+\end{longtable}
+
+\end{document}
