@@ -8,9 +8,9 @@
 //NUM_LIGHTS is defined in SignalCoordinator.h and in Internet.h so if you change one change the other... #HACK
 
 #define LAMP_INDEX 2
-#define RED 255
-#define GREEN 255
-#define BLUE 255
+#define RED 0
+#define GREEN 0
+#define BLUE 0
 
 #define ARDU_TX_ADD_PIN 12
 #define ARDU_TX_REMOVE_PIN 5
@@ -73,7 +73,7 @@ void loop() {
     Serial.println("Light on");
   }
   else{
-    light.setColor(0, 0, 0);
+    light.setColor(255, 255, 255);
   }
 
 }
